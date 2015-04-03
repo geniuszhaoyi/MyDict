@@ -1,0 +1,5 @@
+all:
+	g++ main.cpp -o DictGRE3000.out
+	
+clear:
+	rm *.out *.o
