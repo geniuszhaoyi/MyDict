@@ -112,7 +112,7 @@ def main():
         pass
     atexit.register(readline.write_history_file,histfile)
     
-    f=open('dicts.conf')
+    f=open('/home/zhaoyi/workspace/myDict/dicts.conf')
     ls=f.readlines()
     f.close()
     Dicts=[]
