@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+<!--
+.style1 {color: white}
+-->
+</style>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.1.min.js"></script><script>
+$(document).ready(function(){
+    $("#submit").click(function(){
+        $.get("servlet/login.php?user="+$("#user").val(),function(data,status){
+            if($.trim(data)=="success" && status=='success'){
+                self.location="recite.html?user="+$("#user").val()
+            }else{
+                alert("Login Failed! ")
+            }
+        });
+    });
+});
+</script>
+</head>
+
+<body>
+<h2>背单词</h2>
+
+<p>
+Input Username: <input type="text" id="user">
+<input type="submit" id="submit">
+</p>
+
+</body>
+</html>
+

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<title>背单词</title>
+<style type="text/css">
+<!--
+.style1 {margin: 0px; padding: 0.4em; border: 0em solid rgb(204, 204, 204); max-width: 100%; font-size: 1em; font-family: 黑体; line-height: 2em; background-color: rgb(248, 247, 245); word-wrap: break-word !important; box-sizing: border-box !important;}
+.style_title {font-size: 1.5em; background-color: white;}
+.style_text {font-size: 1em; background-color: white;}
+.style_button {font-size: 1em; background-color: rgb(248, 247, 245);}
+-->
+</style>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.1.min.js"></script><script>
+var $_GET = (function(){
+    var url = window.document.location.href.toString();
+    var u = url.split("?");
+    if(typeof(u[1]) == "string"){
+        u = u[1].split("&");
+        var get = {};
+        for(var i in u){
+            var j = u[i].split("=");
+            get[j[0]] = j[1];
+        }
+        return get;
+    } else {
+        return {};
+    }
+})();
+var $AudioCounter = 0
+$.extend({aa:function(src){
+  $.get(src,function(data,status){
+    var obj = jQuery.parseJSON(data);
+    if(obj.word=="__EMPTY__"){
+      alert("暂时没有了哦");
+      $("#desc").show();
+      $("#nomore").show();
+      $("#know").hide();
+      $("#dontknow").hide();
+    }else{
+      if($("#word").text()!='__WORD__') alert($("#word").text()+'\n'+$("#desc").text());
+      $("#word").text(obj.word);
+      $("#desc").text(obj.desc);
+      $("#MWDesc").html(obj.MWDesc);
+      $('#chatAudio').remove()
+      $('<audio id="chatAudio"><source src="'+obj.MWWav+'" type="audio/wav"></audio>').appendTo('body');
+      if($("#audioswitch").text()=='1') $('#chatAudio')[0].play()
+      $("#status").text("0")
+      $("#desc").hide();
+      $("#MWDesc").hide();
+      $("#nomore").hide();
+    }
+  });
+}});
+$(document).ready(function(){
+  $("#user").text($_GET['user'])
+  $("#status").hide()
+  $("#audiono").hide()
+  $("#audioswitch").hide()
+  $.aa("servlet/markword.php?user="+$("#user").text());
+  $("#audio").click(function(){
+    $("#audio").hide()
+    $("#audiono").show()
+    $("#audioswitch").text("0")
+  });
+  $("#audiono").click(function(){
+    $("#audio").show()
+    $("#audiono").hide()
+    $("#audioswitch").text("1")
+  });
+  $("#word").click(function(){
+    if($("#audioswitch").text()=='1') $('#chatAudio')[0].play();
+  });
+  $("#know").click(function(){
+    $.aa("servlet/markword.php?user="+$("#user").text()+"&word="+$("#word").text()+"&status="+$("#status").text()+" ");
+  });
+  $("#dontknow").click(function(){
+    if($("#status").text()=="0"){
+      $("#status").text("1")
+      $("#MWDesc").show();
+    }else if($("#status").text()=="1"){
+      $("#status").text("2")
+      $("#desc").show();
+    }else{
+      $("#status").text("3")
+      $.aa("servlet/markword.php?user="+$("#user").text()+"&word="+$("#word").text()+"&status="+$("#status").text()+" ");
+    }
+  });
+});
+</script>
+</head>
+<body>
+<div class="style1 style_title">背单词
+<image id="audio" src="audio.jpg" style="WIDTH:0.8em">
+<image id="audiono" src="audio-no.jpg" style="WIDTH:0.8em">
+<p id=audioswitch>1</p>
+</div>
+<div class="style1 style_text" id="user">__USER__</div>
+<div class="style1 style_text" id="word">__WORD__</div>
+<div class="style1 style_button" style="background-color: #00FF00;" id='know'>I know this word. </div>
+<div class="style1 style_button" style="background-color: red;" id='dontknow'>I DON'T know this word. </div>
+<div class="style1 style_text" id="status">0</div>
+<div class="style1 style_text" id='nomore'>暂时没有了哦 - 请稍后刷新</div>
+<div class="style1 style_text" id="desc">__DESC__</div>
+<div class="style1 style_text" id='MWDesc'>__MWDesc__</div>
+</div>
+</body>
+</html>
+
