@@ -14,6 +14,7 @@
 .style_title {font-size: 1.5em; background-color: white;}
 .style_text {font-size: 1em; background-color: white;}
 .style_button {font-size: 1em; background-color: rgb(248, 247, 245);}
+.vi {font-size: 0.8em;}
 -->
 </style>
 <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.1.min.js"></script><script>
@@ -33,27 +34,70 @@ var $_GET = (function(){
     }
 })();
 var $AudioCounter = 0
+$.extend({XMLgetOne:function(xml){
+  var mark = 0;
+  var ans = '';
+  xml.each(function(index, ele){
+    if(mark==1) return 
+    mark=1
+    ans=$(ele).text()
+  });
+  return ans
+}});
+$.extend({WMRP:function(string){
+  if(string==null) return '';
+  string=string.replace(eval("/"+"<it>"+"/gi"),'<span style="font-style: italic; ">');
+  string=string.replace(eval("/"+"<[\/]it>"+"/gi"),"</span>");
+  string=string.replace(eval("/"+"<un>"+"/gi")," --");
+  string=string.replace(eval("/"+"<[\/]un>"+"/gi")," ");
+  string=string.replace(eval("/"+"<vi>"+"/gi"),"&lt;");
+  string=string.replace(eval("/"+"<[\/]vi>"+"/gi"),"&gt");
+  string=string.replace(eval("/"+"<ma>"+"/gi"),"[");
+  string=string.replace(eval("/"+"<[\/]ma>"+"/gi"),"]");
+  return string;
+}});
 $.extend({aa:function(src){
+  $("#know").hide();
+  $("#dontknow").hide();
   $.get(src,function(data,status){
     var obj = jQuery.parseJSON(data);
     if(obj.word=="__EMPTY__"){
       alert("暂时没有了哦");
       $("#desc").show();
       $("#nomore").show();
-      $("#know").hide();
-      $("#dontknow").hide();
     }else{
       if($("#word").text()!='__WORD__') alert($("#word").text()+'\n'+$("#desc").text());
       $("#word").text(obj.word);
       $("#desc").text(obj.desc);
-      $("#MWDesc").html(obj.MWDesc);
-      $('#chatAudio').remove()
-      $('<audio id="chatAudio"><source src="'+obj.MWWav+'" type="audio/wav"></audio>').appendTo('body');
-      if($("#audioswitch").text()=='1') $('#chatAudio')[0].play()
-      $("#status").text("0")
+      $("#Remainder").html("Remainder: "+obj.Remainder);
       $("#desc").hide();
       $("#MWDesc").hide();
       $("#nomore").hide();
+      
+      $("#MWDesc").html("");
+      for(var i=0;i<$AudioCounter;i++)
+        $('#chatAudio'+i).remove();
+      $AudioCounter=0
+      $.get("servlet/WMDesc.php?word="+obj.word,function(data,status){
+        WMXml="<xml>"+data+"</xml>";
+        $(WMXml).find("entry_list").find("entry").each(function(index, ele){
+          $('<div id="MWDescEntry'+index+'"></div>').appendTo("#MWDesc");
+          $('<span class="style_WMBlock" onclick="chatAudio'+$AudioCounter+'.play()">'+$(ele).find("ew").text()+'&nbsp;&nbsp;&nbsp;['+$.XMLgetOne($(ele).find("pr"))+']&nbsp;&nbsp;&nbsp;'+$.XMLgetOne($(ele).find("fl"))+'<br></span>').appendTo('#MWDescEntry'+index);
+          $(ele).find('def').find('dt').each(function(index2,ele2){
+            $('<span class="style_WMBlock">'+$.WMRP($(ele2).html())+'<br></span>').appendTo('#MWDescEntry'+index);
+          });
+          $('<span class="style_WMBlock" style="font-size: 0.8em; color: darkgray;">'+$.WMRP($(ele).find("et").html())+'<br></span>').appendTo('#MWDescEntry'+index);
+          X=$.XMLgetOne($(ele).find('sound').find('wav'));
+          if(X!='') WMWav=X;
+          WMsrc='http://media.merriam-webster.com/soundc11/'+WMWav[0]+'/'+WMWav;
+          $('<audio id="chatAudio'+$AudioCounter+'"><source src="'+WMsrc+'" type="audio/wav"></audio>').appendTo('body');
+          $AudioCounter=$AudioCounter+1;
+        });
+        if($("#audioswitch").text()=='1' && $AudioCounter>0) $('#chatAudio0')[0].play();
+        $("#status").text("0");
+        $("#know").show();
+        $("#dontknow").show();
+      },"XML");
     }
   });
 }});
@@ -72,9 +116,6 @@ $(document).ready(function(){
     $("#audio").show()
     $("#audiono").hide()
     $("#audioswitch").text("1")
-  });
-  $("#word").click(function(){
-    if($("#audioswitch").text()=='1') $('#chatAudio')[0].play();
   });
   $("#know").click(function(){
     $.aa("servlet/markword.php?user="+$("#user").text()+"&word="+$("#word").text()+"&status="+$("#status").text()+" ");
@@ -101,6 +142,7 @@ $(document).ready(function(){
 <p id=audioswitch>1</p>
 </div>
 <div class="style1 style_text" id="user">__USER__</div>
+<div class="style1 style_text" id="Remainder">Remainder: 100</div>
 <div class="style1 style_text" id="word">__WORD__</div>
 <div class="style1 style_button" style="background-color: #00FF00;" id='know'>I know this word. </div>
 <div class="style1 style_button" style="background-color: red;" id='dontknow'>I DON'T know this word. </div>

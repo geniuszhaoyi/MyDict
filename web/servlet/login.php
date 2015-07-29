@@ -19,8 +19,7 @@ if(isset($_GET["user"])){
             mysql_db_query($database, "UPDATE User SET `lastLogin`='".CURDATE()."' WHERE `user`='".$_GET["user"]."'; ", $conn);
             $sql="SELECT `word` FROM `WordBase` WHERE source='GRE3000' AND 
                 NOT EXISTS (SELECT `word` FROM `RecitingWord` WHERE `RecitingWord`.user='".$_GET["user"]."' and `WordBase`.word=`RecitingWord`.word)
-                ORDER BY 'word' LIMIT 0,".$listmax."; ";
-//            print $sql;
+                ORDER BY  `WordBase`.`word` ASC LIMIT 0,".$listmax."; ";
             $result=mysql_db_query($database, $sql, $conn);
             for($i=0;$i<$listmax;$i+=1){
                 $one=mysql_fetch_array($result);
