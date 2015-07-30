@@ -7,7 +7,7 @@ mysql_query("set character set 'utf8'");
 mysql_query("set names set 'utf8'");
 
 print '<table border=0>';
-print '<tr><td>用户</td><td>&nbsp;&nbsp;</td><td>不认识</td><td>见过</td><td>熟悉</td><td>掌握</td></tr>';
+print '<tr><td>用户</td><td>&nbsp;&nbsp;</td><td>不认识</td><td>见过</td><td>熟悉</td><td>掌握</td><td>&nbsp;&nbsp;</td><td>最近学到的单词</td><td>将要学到的单词</td></tr>';
 
 $result=mysql_db_query($database, "SELECT `user` FROM `User`; ", $conn);
 while($one=mysql_fetch_array($result)){
@@ -25,11 +25,22 @@ while($one=mysql_fetch_array($result)){
     print "<td>".$array[1]."</td>";
     print "<td>".$array[2]."</td>";
     print "<td>".$array[3]."</td>";
+    
+    print "<td>&nbsp;&nbsp;</td>";
+    
+    $result1=mysql_db_query($database, "SELECT `word` FROM `RecitingWord` WHERE `user`='".$one[0]."' ORDER BY `lastRecite` DESC LIMIT 0,1; ");
+    $x=mysql_fetch_array($result1);
+    print "<td><a href='http://www.merriam-webster.com/dictionary/".$x[0]."'>".$x[0]."</a></td>";
+    
+    $result1=mysql_db_query($database, "SELECT `word`,`status`,`lastRecite` FROM `RecitingWord` WHERE status<10 and DATE_ADD(`lastRecite`, INTERVAL power(`status`,4) MINUTE)<now() and user='".$one[0]."' ORDER BY `RecitingWord`.`RWID` ASC LIMIT 0,1; ");
+    $x=mysql_fetch_array($result1);
+    print "<td><a href='http://www.merriam-webster.com/dictionary/".$x[0]."'>".$x[0]."</a></td>";
+    
     print "</tr>";
 }
 
 print '</table>';
 
+mysql_close($conn);
 ?>
-
 

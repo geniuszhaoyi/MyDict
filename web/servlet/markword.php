@@ -29,14 +29,13 @@ if(isset($_GET["user"]) && isset($_GET["word"]) && isset($_GET["status"])){
 }
 
 
-$result=mysql_db_query($database, "SELECT `word`,`status`,`lastRecite` FROM `RecitingWord` WHERE user='".$_GET["user"]."' ORDER BY `RecitingWord`.`RWID` ASC; ", $conn);
+$result=mysql_db_query($database, "
+SELECT `word`,`status`,`lastRecite` FROM `RecitingWord` 
+WHERE status<10 and DATE_ADD(`lastRecite`, INTERVAL power(`status`,4) MINUTE)<now() and user='".$_GET["user"]."' 
+ORDER BY `RecitingWord`.`RWID` ASC; ", $conn);
 
 $array=array();
-while($one=mysql_fetch_array($result)){
-    if(intval($one['status'])>=10) continue;
-    if(intval(strtotime($one['lastRecite']))+$intervalSecs*pow(intval($one['status']),4)>=time()) continue;
-    $array[]=$one;
-}
+while($one=mysql_fetch_array($result)) $array[]=$one;
 
 if(count($array)==0){
     print '{"word":"__EMPTY__"}';
