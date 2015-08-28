@@ -14,11 +14,13 @@
 </style>
 <link rel="stylesheet" href="css/main.css" type="text/css" />
 <link rel="stylesheet" href="css/link-dotted.css" type="text/css" />
-<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.4.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-cookie/jquery.cookie.js"></script>
 <script type="text/javascript" src="javascript/WMfunctions.jsp"></script>
 <script type="text/javascript" src="javascript/util.jsp"></script>
 <script>
 var $AudioCounter = 0
+var $user = undefined
 $.extend({aa:function(word){
   $.get("servlet/search.php?word="+word,function(data,status){
       var obj = jQuery.parseJSON(data)[0];
@@ -29,7 +31,7 @@ $.extend({aa:function(word){
         $('#chatAudio'+i).remove();
       $AudioCounter=0
       $.get("servlet/WMDesc.php?word="+obj.word,function(data,status){
-        WMXml="<xml>"+data+"</xml>";
+        WMXml='<xml>'+data+'</xml>';
         $(WMXml).find("entry_list").find("entry").each(function(index, ele){
           $('<div id="MWDescEntry'+index+'"></div>').appendTo("#MWDesc");
           $('<span class="style_WMBlock" onclick="chatAudio'+$AudioCounter+'.play()">'+$(ele).find("ew").text()+'&nbsp;&nbsp;&nbsp;['+$.XMLgetOne($(ele).find("pr"))+']&nbsp;&nbsp;&nbsp;'+$.XMLgetOne($(ele).find("fl"))+'<br></span>').appendTo('#MWDescEntry'+index);
@@ -48,14 +50,20 @@ $.extend({aa:function(word){
   });
 }});
 $(document).ready(function(){
-    if(typeof($_GET['user'])=="undefined"){
-        $('#AtRL').hide();
+    if(typeof($_GET['user'])!="undefined"){
+        $.cookie('dict-user', $_GET['user'], { expires: 30 });
     }
+    $user=$.cookie('dict-user');
+    if(typeof($user)=="undefined"){
+        $("#AtRL").hide();
+    }
+    
+    
     if(typeof($_GET['word'])!="undefined"){
         $.aa($_GET['word']);
     }
     $("#AtRL").click(function(){
-        $.get("servlet/AtRL.php?word="+$_GET['word']+"&user="+$_GET['user'],function(data,status){
+        $.get("servlet/AtRL.php?word="+$_GET['word']+"&user="+$user,function(data,status){
             alert(status)
         });
     });

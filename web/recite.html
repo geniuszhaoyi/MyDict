@@ -10,18 +10,17 @@
 <title>背单词</title>
 <style type="text/css">
 <!--
-.style1 {margin: 0px; padding: 0.4em; border: 0em solid rgb(204, 204, 204); max-width: 100%; font-size: 1em; font-family: 黑体; line-height: 2em; background-color: rgb(248, 247, 245); word-wrap: break-word !important; box-sizing: border-box !important;}
-.style_title {font-size: 1.5em; background-color: white;}
-.style_text {font-size: 1em; background-color: white;}
-.style_button {font-size: 1em; background-color: rgb(248, 247, 245);}
 .vi {font-size: 0.8em;}
 -->
 </style>
-<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.1.min.js"></script>
+<link rel="stylesheet" href="css/main.css" type="text/css" />
+<script type="text/javascript" src="jquery/jquery-1.4.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-cookie/jquery.cookie.js"></script>
 <script type="text/javascript" src="javascript/WMfunctions.jsp"></script>
 <script type="text/javascript" src="javascript/util.jsp"></script>
 <script>
 var $AudioCounter = 0
+var $user = undefined
 $.extend({aa:function(src){
   $("#know").hide();
   $("#dontknow").hide();
@@ -45,7 +44,7 @@ $.extend({aa:function(src){
         $('#chatAudio'+i).remove();
       $AudioCounter=0
       $.get("servlet/WMDesc.php?word="+obj.word,function(data,status){
-        WMXml="<xml>"+data+"</xml>";
+        WMXml='<xml>'+data+'</xml>';
         $(WMXml).find("entry_list").find("entry").each(function(index, ele){
           $('<div id="MWDescEntry'+index+'"></div>').appendTo("#MWDesc");
           $('<span class="style_WMBlock" onclick="chatAudio'+$AudioCounter+'.play()">'+$(ele).find("ew").text()+'&nbsp;&nbsp;&nbsp;['+$.XMLgetOne($(ele).find("pr"))+']&nbsp;&nbsp;&nbsp;'+$.XMLgetOne($(ele).find("fl"))+'<br></span>').appendTo('#MWDescEntry'+index);
@@ -68,7 +67,15 @@ $.extend({aa:function(src){
   });
 }});
 $(document).ready(function(){
-  $("#user").text($_GET['user'])
+    if(typeof($_GET['user'])!="undefined"){
+        $.cookie('dict-user', $_GET['user'], { expires: 30 });
+    }
+    $user=$.cookie('dict-user');
+    if(typeof($user)=="undefined"){
+        $("").hide();
+    }
+
+  $("#user").text($user)
   $("#status").hide()
   $("#audiono").hide()
   $("#audioswitch").hide()

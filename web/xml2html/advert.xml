@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<?xml-stylesheet type="text/xsl" href="con.xsl"?>
-<entry_list version="1.0">
-	<entry id="advert[1]"><ew>advert</ew><hw hindex="1">ad*vert</hw><sound><wav>advert01.wav</wav><wpr>ad-!vurt</wpr></sound><pr>ad-ˈvərt</pr><fl>verb</fl><et>Middle English, to perceive, pay heed, from Anglo-French &amp; Latin; Anglo-French <it>advertir,</it> from Latin <it>advertere,</it> from <it>ad-</it> + <it>vertere</it> to turn <ma>worth</ma></et><def><vt>intransitive verb</vt><date>15th century</date> <sn>1</sn> <dt>:to turn the mind or attention <un>used with <it>to</it> <vi><it>advert</it><it>ed</it> to the speaker</vi></un></dt> <sn>2</sn> <dt>:to call attention in the course of speaking or writing :make reference <un>used with <it>to</it> <vi><it>advert</it><it>ed</it> to foreign-language sources</vi></un></dt></def></entry>
-	<entry id="advert[2]"><ew>advert</ew><hw hindex="2">ad*vert</hw><sound><wav>advert02.wav</wav><wpr>!ad-+vurt</wpr></sound><pr>ˈad-ˌvərt</pr><fl>noun</fl><def><date>1860</date><sl>chiefly British</sl><dt>:<sx>advertisement</sx></dt></def></entry>
-</entry_list>

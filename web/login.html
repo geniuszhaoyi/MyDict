@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<title>Login</title>
+<style type="text/css">
+<!--
+.style1 {color: white}
+-->
+</style>
+<link rel="stylesheet" href="css/main.css" type="text/css" />
+<link rel="stylesheet" href="css/link-dotted.css" type="text/css" />
+<script type="text/javascript" src="jquery/jquery-1.4.1.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-cookie/jquery.cookie.js"></script>
+<script type="text/javascript" src="javascript/WMfunctions.jsp"></script>
+<script>
+$(document).ready(function(){
+    $.cookie('dict-user', null);
+    $("#submit").click(function(){
+        user=$("#user").val();
+        $.get("servlet/login.php?user="+user,function(data,status){
+            if($.trim(data)=="success" && status=='success'){
+                alert("Login Secceed! ")
+                $.cookie('dict-user', user, { expires: 30 });
+                //self.location="recite.html?user="+$("#user").val()
+            }else{
+                alert("Login Failed! ")
+            }
+        });
+    });
+});
+</script>
+</head>
+
+<body>
+<h2>背单词 - 登录</h2>
+
+<p>
+Input Username: <input type="text" id="user">
+<input type="submit" id="submit">
+</p>
+
+</body>
+</html>
+
