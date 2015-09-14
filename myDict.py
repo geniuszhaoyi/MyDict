@@ -71,7 +71,7 @@ def getDscp(Dicts, a):
     print a
     print Dicts[a].decode('utf-8').encode(chartype)
 
-def getdict(Dicts, a):
+def getdict(Dicts, a): 
     for (desc,Dict) in Dicts:
         print '-'*20
         print 'Words from: <<',desc,'>>'
